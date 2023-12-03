@@ -1,12 +1,10 @@
-import _ from "lodash";
-
-const sample = `Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green
+export const sample = `Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green
 Game 2: 1 blue, 2 green; 3 green, 4 blue, 1 red; 1 green, 1 blue
 Game 3: 8 green, 6 blue, 20 red; 5 blue, 4 red, 13 green; 5 green, 1 red
 Game 4: 1 green, 3 red, 6 blue; 3 green, 6 red; 3 green, 15 blue, 14 red
 Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green`;
 
-const input = `Game 1: 3 blue, 2 green, 6 red; 17 green, 4 red, 8 blue; 2 red, 1 green, 10 blue; 1 blue, 5 green
+export const input = `Game 1: 3 blue, 2 green, 6 red; 17 green, 4 red, 8 blue; 2 red, 1 green, 10 blue; 1 blue, 5 green
 Game 2: 9 red, 2 green; 5 red, 1 blue, 6 green; 3 green, 13 red, 1 blue; 3 red, 6 green; 1 blue, 14 red, 6 green
 Game 3: 6 red, 3 blue, 8 green; 6 blue, 12 green, 15 red; 3 blue, 18 green, 4 red
 Game 4: 1 blue, 4 red; 2 blue, 6 red; 13 blue; 11 blue, 1 green, 8 red; 10 blue, 3 green, 2 red; 3 green, 7 blue
@@ -106,65 +104,3 @@ Game 97: 1 green, 1 red, 1 blue; 2 blue, 11 green; 1 blue, 13 green; 9 blue, 6 g
 Game 98: 12 green, 9 red; 12 green, 10 blue, 3 red; 3 red, 13 green, 7 blue
 Game 99: 8 green, 10 blue, 1 red; 10 green, 2 red, 6 blue; 3 green, 1 blue, 1 red; 10 blue, 1 red
 Game 100: 8 blue, 6 green, 8 red; 7 red, 2 blue; 2 red, 10 green, 10 blue; 9 green, 7 red; 3 red, 7 green, 1 blue`;
-
-const gameNum = (line) => parseInt(line.split(":")[0].split(" ")[1]);
-const getRounds = (line) => {
-  return line
-    .split(":")[1]
-    .split(";")
-    .map((round) => {
-      return Object.fromEntries(
-        round.split(",").map((pull) => {
-          const [num, color] = pull.trim().split(" ");
-          return [color, parseInt(num)];
-        })
-      );
-    });
-};
-
-const gameIsPossible = (game, limit) => {
-  const limits = Object.entries(limit);
-  return game.rounds.every((round) => {
-    return limits.every(([color, num]) => {
-      const a = (round[color] || 0) <= num;
-      return a;
-    });
-  });
-};
-
-const gamePower = (game) => {
-  const highestSet = {};
-  game.rounds.forEach((round) => {
-    Object.entries(round).forEach(([color, num]) => {
-      if (!highestSet[color] || highestSet[color] < num) {
-        highestSet[color] = num;
-      }
-    });
-  });
-
-  let power = 1;
-  Object.values(highestSet).forEach((num) => {
-    power *= num;
-  });
-  return power;
-};
-
-const games = input.split("\n").map((line) => {
-  return {
-    num: gameNum(line),
-    rounds: getRounds(line),
-  };
-});
-
-const limit = {
-  red: 12,
-  green: 13,
-  blue: 14,
-};
-
-const possibleGames = games.filter((game) => gameIsPossible(game, limit));
-
-const part1 = _.sum(possibleGames.map((game) => game.num));
-const part2 = _.sum(games.map((game) => gamePower(game)));
-
-console.log(part2);

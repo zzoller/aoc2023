@@ -1,4 +1,4 @@
-import { sample1, sample2, input } from "./3.input";
+import { sample1, sample2, input } from "./input/3";
 import _ from "lodash";
 
 type PartMatch = [
@@ -6,10 +6,6 @@ type PartMatch = [
   number, // startPos
   number // endPos
 ];
-
-const foundParts = {} as { [key: string]: number };
-
-const isSymbol = (char: string) => char?.match(/[^\.\d]/);
 
 const matches = (str: string, search: RegExp) => {
   const indices = [];
@@ -20,8 +16,12 @@ const matches = (str: string, search: RegExp) => {
   return indices as PartMatch[];
 };
 
+const foundParts = {} as { [key: string]: number };
+const isSymbol = (char: string) => char?.match(/[^\.\d]/);
+
 const numbersInLine = (lines: string[], lineNum: number) => {
   const nums = matches(lines[lineNum], /\d+/g);
+
   (nums || []).forEach(([num, pos]) => {
     const end = pos + num.length;
 
@@ -43,7 +43,9 @@ const part1 = (input: string) => {
   lines.forEach((_, lineIdx) => {
     numbersInLine(lines, lineIdx);
   });
-  console.log(_.sum(Object.values(foundParts)));
+  const ans = _.sum(Object.values(foundParts));
+
+  console.log(ans);
 };
 
 const partIsInSpace = (part: PartMatch, positions: number[]) => {

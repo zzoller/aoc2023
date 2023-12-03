@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { sample1, sample2, input } from "./1.input";
+import { sample1, sample2, input } from "./input/1";
 
 // part1
 const countSum = (input: string) => {
@@ -35,24 +35,27 @@ const valueMap = {
   9: "9",
 } as { [key: string]: string };
 
-const countSum2 = (input: string) => {
+const part2 = (input: string) => {
   const nums = input.split("\n").map((line) => {
-    let positions: [number, string][] = [];
+    const matches = Object.keys(valueMap)
+      .flatMap(
+        (key) =>
+          [
+            [line.indexOf(key), key],
+            [line.lastIndexOf(key), key],
+          ] as [number, string][]
+      )
+      .filter(([idx]) => idx >= 0);
 
-    Object.keys(valueMap).map((key) => {
-      const pos = line.indexOf(key);
-      if (pos !== -1) {
-        positions.push([pos, key]);
-      }
-    });
-    positions = _.orderBy(positions, ["0"], ["asc"]);
-
-    return parseInt(
-      valueMap[positions[0][1]] + valueMap[positions[positions.length - 1][1]]
+    const ordered = _.sortBy(matches, (match) => match[0]).map(
+      (match) => match[1]
     );
-  });
+    const firstNum = ordered[0];
+    const lastNum = ordered[ordered.length - 1];
 
+    return parseInt(valueMap[firstNum] + valueMap[lastNum]);
+  });
   return _.sum(nums);
 };
 
-console.log(countSum2(input));
+console.log("part2", part2(input));
