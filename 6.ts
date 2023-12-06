@@ -35,4 +35,6 @@ const part2 = (input: string) => {
 };
 
 console.log("part1", part1(input));
+const now = performance.now();
 console.log("part1", part2(input));
+console.log("time", performance.now() - now);
